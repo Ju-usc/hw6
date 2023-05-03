@@ -333,22 +333,26 @@ template<typename K, typename V, typename Prober, typename Hash, typename KEqual
 void HashTable<K,V,Prober,Hash,KEqual>::insert(const ItemType& p)
 {
     if((double)size_/(double)CAPACITIES[mIndex_]>= resizeAlpha_){
-       
         this->resize();
     }
     HASH_INDEX_T loc = this->probe(p.first);
-    if(loc == npos){ 
-		throw std::logic_error("FULL LOCATION");
-	}
-    else if(table_[loc] == nullptr){
+
+    if(loc != npos && table_[loc] == nullptr){
         HashItem* temp = new HashItem(p);
         table_[loc] = temp;
         size_++;
     }
-    else if(table_[loc]->item.first == p.first && table_[loc]->deleted != true){
+    else if(loc != npos && table_[loc]->item.first == p.first && table_[loc]->deleted != true){
         // just updated the item
         table_[loc]->item.second = p.second;
     }
+    else{
+        throw std::logic_error("FULL LOCATION");
+    }
+    
+    
+    
+    
 
    
 }
@@ -443,10 +447,7 @@ void HashTable<K,V,Prober,Hash,KEqual>::resize()
 		table_.assign(m , nullptr);
         // std::cout << "table size is now "<< table_.size() << std::endl;
         for (HASH_INDEX_T i = 0; i < temp.size(); ++i) {
-            if (temp[i] == nullptr) {
-                continue; // skip empty slots
-            }
-            if (temp[i]->deleted == false) {
+            if (temp[i] != nullptr && temp[i]->deleted != true){
                 // insert non-deleted items into new table
                 insert(temp[i]->item);
                 size_--;

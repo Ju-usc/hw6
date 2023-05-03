@@ -47,13 +47,13 @@ struct MyStringHash {
         }
         wValues[wIndex] = val;
 
-        HASH_INDEX_T ans = 0;
+        HASH_INDEX_T hash = 0;
         for (int i = 0 ; i < 5 ; ++i) 
         { 
-            ans += (wValues[i] * rValues[i]);
+            hash += (wValues[i] * rValues[i]);
         }
 
-        return ans;
+        return hash;
     }
     // TODO:
     // A likely helper function is to convert a-z,0-9 to an integral value 0-35
